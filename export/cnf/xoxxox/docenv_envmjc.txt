@@ -1,0 +1,28 @@
+FROM ubuntu:24.04
+
+ENV OPTAPT=""
+#ENV OPTAPT="-o Acquire::AllowInsecureRepositories=true -o Acquire::AllowDowngradeToInsecureRepositories=true"
+RUN \
+  apt-get ${OPTAPT} -y update && \
+  apt-get ${OPTAPT} -y upgrade && \
+  apt-get ${OPTAPT} -y install --no-install-recommends xauth && \
+  apt-get ${OPTAPT} -y install --no-install-recommends openssh-server && \
+  apt-get ${OPTAPT} -y install --no-install-recommends python3 python3-venv && \
+  apt-get ${OPTAPT} -y install --no-install-recommends mesa-utils && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /run/sshd
+
+ENV USRAPP=usrapp
+RUN useradd -m -s /bin/bash ${USRAPP}
+RUN passwd -l ${USRAPP}
+
+ENV DIRSSH=/home/${USRAPP}/.ssh
+ENV ATHSSH=authorized_keys
+RUN mkdir -p ${DIRSSH} && chmod 700 ${DIRSSH}
+COPY --chmod=600 ${ATHSSH} ${DIRSSH}
+RUN chown -R ${USRAPP}:${USRAPP} ${DIRSSH}
+
+ENV DIRPYT=/env/python
+RUN python3 -m venv ${DIRPYT}
+RUN ${DIRPYT}/bin/pip3 install --no-cache-dir mujoco

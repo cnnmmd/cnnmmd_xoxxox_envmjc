@@ -1,0 +1,13 @@
+networks:
+  default:
+    name: xoxxox_netmid
+    external: true
+services:
+  xoxxox_envmjc:
+    image: xoxxox/envmjc:001
+    container_name: xoxxox_envmjc
+    env_file:
+      - ./envdir.txt
+    volumes:
+      - ../../../export:/opt/common
+    command: bash -c "/usr/sbin/sshd -D"

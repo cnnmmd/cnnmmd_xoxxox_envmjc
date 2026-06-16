@@ -10,4 +10,5 @@ services:
       - ./envdir.txt
     volumes:
       - ../../../export:/opt/common
+      - ../../../import/cnnmmd_xoxxox_envmjc/appmjc:/opt/appmcj
     command: bash -c "/usr/sbin/sshd -D"
